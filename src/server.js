@@ -11,6 +11,7 @@ import { errorHandlingMiddleware } from '~/middlewares/errorHandlingMiddleware'
 const START_SERVER = () => {
   const app = express()
 
+  //Add CORS for project
   app.use(cors(corsOptions))
 
   //Enable req.body of json data
