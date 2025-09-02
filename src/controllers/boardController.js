@@ -1,10 +1,14 @@
 import { StatusCodes } from 'http-status-codes'
 // import ApiError from '~/utils/ApiError'
+import { boardService } from '~/services/boardService'
 
 const createNew = async (req, res, next) => {
   try {
-    // throw new ApiError(StatusCodes.BAD_GATEWAY, 'Test Error')
-    res.status(StatusCodes.CREATED).json({ massage: 'POST from CONTROLLER: API create new board' })
+    //Redirect sang Service layer
+    const createdBoard = await boardService.createNew(req.body)
+
+    //Reponse cho client
+    res.status(StatusCodes.CREATED).json(createdBoard)
   } catch (error) { next(error) }
 }
 
