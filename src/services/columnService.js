@@ -13,9 +13,8 @@ const createNew = async (data) => {
     const getNewColumn = await columnModel.findColumnById(createdColumn.insertedId)
 
     //...
-    if(getNewColumn){
+    if (getNewColumn) {
       getNewColumn.cards = []
-
       await boardModel.pushColumnOrderIds(getNewColumn)
     }
 
@@ -25,6 +24,22 @@ const createNew = async (data) => {
   }
 }
 
+const update = async (columnId, reqBody) => {
+  try {
+
+    //Redirect den tang model
+    const updateData = {
+      ...reqBody,
+      updatedAt: Date.now()
+    }
+    const updatedColumn = await columnModel.update(columnId, updateData)
+    return updatedColumn
+  } catch (error) {
+    throw error
+  }
+}
+
 export const columnService = {
-  createNew
+  createNew,
+  update
 }
