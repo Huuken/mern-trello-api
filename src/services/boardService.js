@@ -4,6 +4,8 @@ import { boardModel } from '~/models/boardModel'
 import ApiError from '~/utils/ApiError'
 import { StatusCodes } from 'http-status-codes'
 import { cloneDeep } from 'lodash'
+import { columnModel } from '~/models/columnModel'
+import { cardModel } from '~/models/cardModel'
 
 const createNew = async (data) => {
   try {
@@ -42,10 +44,49 @@ const getDetails = async (boardId) => {
   } catch (error) {
     throw error
   }
+}
 
+const update = async (boardId, reqBody) => {
+  try {
+
+    //Redirect den tang model
+    const updateData = {
+      ...reqBody,
+      updatedAt: Date.now()
+    }
+    const updatedBoard = await boardModel.update(boardId, updateData)
+    return updatedBoard
+  } catch (error) {
+    throw error
+  }
+}
+
+const moveCardDifferentCol = async (reqBody) => {
+  try {
+    //Xoa card ra khoi column ban dau
+    await columnModel.update(reqBody.prevColumnId, {
+      cardOrderIds: reqBody.prevCardOrderIds,
+      updateAt: Date.now()
+    })
+
+    await columnModel.update(reqBody.nextColumnId, {
+      cardOrderIds: reqBody.nextCardOrderIds,
+      updateAt: Date.now()
+    })
+
+    await cardModel.update(reqBody.currentCardId, {
+      columnId: reqBody.nextColumnId
+    })
+
+    return { updateResult: 'Successfully!' }
+  } catch (error) {
+    throw error
+  }
 }
 
 export const boardService = {
   createNew,
-  getDetails
+  getDetails,
+  update,
+  moveCardDifferentCol
 }
